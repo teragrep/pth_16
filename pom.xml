@@ -40,6 +40,17 @@
   </properties>
   <dependencies>
     <dependency>
+      <groupId>com.teragrep</groupId>
+      <artifactId>pth_15</artifactId>
+      <version>2.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.spark</groupId>
+      <artifactId>spark-sql_2.12</artifactId>
+      <version>3.5.7</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
       <version>5.4.0-RC1</version>
