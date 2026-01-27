@@ -68,7 +68,7 @@ public final class InterpreterSettingsConfig {
         this.configFile = configFile;
     }
 
-    public Config getConfig() throws FileNotFoundException {
+    public Config config() throws FileNotFoundException {
 
         Config config = ConfigFactory.empty();
 

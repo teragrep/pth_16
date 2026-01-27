@@ -75,7 +75,7 @@ public final class Entry {
 
         final InterpreterSettingsConfig interpreterSettingsConfig = new InterpreterSettingsConfig(configFile);
 
-        final Config config = interpreterSettingsConfig.getConfig();
+        final Config config = interpreterSettingsConfig.config();
 
         final String applicationName = "com.teragrep.pth_16.Entry";
 

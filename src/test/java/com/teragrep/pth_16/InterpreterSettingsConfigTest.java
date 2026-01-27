@@ -60,7 +60,7 @@ public class InterpreterSettingsConfigTest {
         );
 
         Assertions.assertDoesNotThrow(() -> {
-            Config config = interpreterSettingsConfig.getConfig();
+            Config config = interpreterSettingsConfig.config();
 
             Assertions.assertFalse(config.getBoolean("dpl.pth_06.sql.log.enabled"));
 
