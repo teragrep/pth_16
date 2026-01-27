@@ -56,8 +56,19 @@ JAVA_HOME=/usr/lib/jvm/java-11 /opt/teragrep/spk_02/bin/spark-submit \
   --total-executor-cores 8 \
   --jars /opt/teragrep/pth_10/lib/pth_10-shaded.jar,/opt/teragrep/spk_03/lib/*.jar \
   --files interpreter.json pth_16-jar-with-dependencies.jar \
-  '| makeresults count=2 | eval _raw="this is a custom query"'
+  '| makeresults count=1 | eval _raw="this is a custom query"'
 
+----
+
+Results into
+
+[source,text]
+----
++-------------------+----------------------+
+|_time              |_raw                  |
++-------------------+----------------------+
+|2026-01-27 13:02:07|this is a custom query|
++-------------------+----------------------+
 ----
 
 == Contributing
