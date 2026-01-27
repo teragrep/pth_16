@@ -65,19 +65,19 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 
-public class Entry {
+public final class Entry {
 
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(final String[] args) throws FileNotFoundException {
 
-        Logger LOGGER = LoggerFactory.getLogger(Entry.class);
+        final Logger LOGGER = LoggerFactory.getLogger(Entry.class);
 
-        File configFile = new File("interpreter.json");
+        final File configFile = new File("interpreter.json");
 
-        InterpreterSettingsConfig interpreterSettingsConfig = new InterpreterSettingsConfig(configFile);
+        final InterpreterSettingsConfig interpreterSettingsConfig = new InterpreterSettingsConfig(configFile);
 
-        Config config = interpreterSettingsConfig.getConfig();
+        final Config config = interpreterSettingsConfig.getConfig();
 
-        String applicationName = "com.teragrep.pth_16.Entry";
+        final String applicationName = "com.teragrep.pth_16.Entry";
 
         final String lines;
         if (args.length > 0) {
@@ -87,13 +87,13 @@ public class Entry {
             lines = "| makeresults count=1 | eval _raw=\"Welcome to Teragrep®\"";
         }
 
-        String queryId = UUID.randomUUID().toString();
-        String noteId = "pth_16-notebook-" + UUID.randomUUID();
-        String paragraphId = "pth_16-paragraph-" + UUID.randomUUID();
+        final String queryId = UUID.randomUUID().toString();
+        final String noteId = "pth_16-notebook-" + UUID.randomUUID();
+        final String paragraphId = "pth_16-paragraph-" + UUID.randomUUID();
 
         final AtomicReference<List<String>> rows = new AtomicReference<>(new ArrayList<>());
 
-        BiConsumer<Dataset<Row>, Boolean> batchHandler = (rowDataset, aggsUsed) -> {
+        final BiConsumer<Dataset<Row>, Boolean> batchHandler = (rowDataset, aggsUsed) -> {
             rows.set(rowDataset.toJSON().collectAsList());
         };
 
@@ -108,7 +108,7 @@ public class Entry {
             throw new RuntimeException("Error initializing DPLExecutor implementation", e);
         }
 
-        SparkSession sparkSession = SparkSession.builder().appName(applicationName).getOrCreate();
+        final SparkSession sparkSession = SparkSession.builder().appName(applicationName).getOrCreate();
 
         try {
             final DPLExecutorResult executorResult = dplExecutor

@@ -60,11 +60,11 @@ import java.io.FileReader;
 import java.io.FileNotFoundException;
 import java.util.Map;
 
-public class InterpreterSettingsConfig {
+public final class InterpreterSettingsConfig {
 
     private final File configFile;
 
-    public InterpreterSettingsConfig(File configFile) {
+    public InterpreterSettingsConfig(final File configFile) {
         this.configFile = configFile;
     }
 
@@ -73,29 +73,29 @@ public class InterpreterSettingsConfig {
         Config config = ConfigFactory.empty();
 
         try (JsonReader reader = Json.createReader(new FileReader(configFile))) {
-            JsonObject jsonObject = reader.readObject();
+            final JsonObject jsonObject = reader.readObject();
 
             if (!jsonObject.getValueType().equals(JsonValue.ValueType.OBJECT)) {
                 throw new IllegalArgumentException("config does not contain a JSON object");
             }
 
-            String interpreterSettingsKey = "interpreterSettings";
+            final String interpreterSettingsKey = "interpreterSettings";
             if (!jsonObject.containsKey(interpreterSettingsKey)) {
                 throw new IllegalArgumentException(
                         "config does not contain a JSON object with key <" + interpreterSettingsKey + ">"
                 );
             }
 
-            JsonObject interpreterSettings = jsonObject.getJsonObject(interpreterSettingsKey);
+            final JsonObject interpreterSettings = jsonObject.getJsonObject(interpreterSettingsKey);
 
-            String sparkKey = "spark";
+            final String sparkKey = "spark";
             if (!interpreterSettings.containsKey(sparkKey)) {
                 throw new IllegalArgumentException(
                         "config does not contain a <" + interpreterSettingsKey + "> object with key <" + sparkKey + ">"
                 );
             }
 
-            JsonObject sparkObject = interpreterSettings.getJsonObject(sparkKey);
+            final JsonObject sparkObject = interpreterSettings.getJsonObject(sparkKey);
 
             if (!sparkObject.getValueType().equals(JsonValue.ValueType.OBJECT)) {
                 throw new IllegalArgumentException(
@@ -104,7 +104,7 @@ public class InterpreterSettingsConfig {
                 );
             }
 
-            String propertieskey = "properties";
+            final String propertieskey = "properties";
             if (!sparkObject.containsKey(propertieskey)) {
                 throw new IllegalArgumentException(
                         "config does not contain a <" + interpreterSettingsKey + "> object with key <" + sparkKey
@@ -112,7 +112,7 @@ public class InterpreterSettingsConfig {
                 );
             }
 
-            JsonObject propertiesObject = sparkObject.getJsonObject(propertieskey);
+            final JsonObject propertiesObject = sparkObject.getJsonObject(propertieskey);
 
             if (!propertiesObject.getValueType().equals(JsonValue.ValueType.OBJECT)) {
                 throw new IllegalArgumentException(
@@ -123,24 +123,25 @@ public class InterpreterSettingsConfig {
 
             for (Map.Entry<String, JsonValue> entry : propertiesObject.entrySet()) {
                 if (entry.getKey().startsWith("dpl.") || entry.getKey().startsWith("fs.s3a.")) {
-                    String key = entry.getKey();
+                    final String key = entry.getKey();
 
-                    JsonValue entryValue = entry.getValue();
+                    final JsonValue entryValue = entry.getValue();
 
                     if (!entryValue.getValueType().equals(JsonValue.ValueType.OBJECT)) {
                         throw new IllegalArgumentException("json key <[" + key + "]> does not refer to a json object");
                     }
 
-                    JsonObject entryValueObject = entryValue.asJsonObject();
+                    final JsonObject entryValueObject = entryValue.asJsonObject();
 
-                    String valueKey = "value";
+                    final String valueKey = "value";
                     if (!entryValueObject.containsKey(valueKey)) {
                         throw new IllegalArgumentException(
                                 "json key <[" + key + "]> does not refer to a json object with a key named <" + valueKey
                                         + ">"
                         );
                     }
-                    JsonValue jsonValue = entryValueObject.get(valueKey);
+
+                    final JsonValue jsonValue = entryValueObject.get(valueKey);
 
                     switch (jsonValue.getValueType()) {
                         case STRING:
