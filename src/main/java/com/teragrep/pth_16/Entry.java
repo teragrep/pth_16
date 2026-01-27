@@ -49,21 +49,26 @@ import com.teragrep.pth_15.DPLExecutor;
 import com.teragrep.pth_15.DPLExecutorFactory;
 import com.teragrep.pth_15.DPLExecutorResult;
 import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.TimeoutException;
 import java.util.function.BiConsumer;
 
 public class Entry {
 
-    public static void main(String[] args) {
-        Config config = ConfigFactory.parseProperties(new Properties());
+    public static void main(String[] args) throws FileNotFoundException {
+        File configFile = new File("interpreter.json");
+
+        InterpreterSettingsConfig interpreterSettingsConfig = new InterpreterSettingsConfig(configFile);
+
+        Config config = interpreterSettingsConfig.getConfig();
+
         String applicationName = "com.teragrep.pth_16.Entry";
         String lines = "| makeresults count=1";
         String queryId = UUID.randomUUID().toString();
