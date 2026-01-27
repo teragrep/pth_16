@@ -1,11 +1,11 @@
 
 = Teragrep DPL Command-Line Executor (pth_16)
 
-Teragrep DPL Command-Line Executor allows running Teragrep queries from command-line.
+Teragrep DPL Command-Line Executor is an utility to run DPL queries from command-line.
 
 == Features
 
-// List your project's features
+-  Allows running Teragrep queries from command-line.
 
 == Documentation
 
