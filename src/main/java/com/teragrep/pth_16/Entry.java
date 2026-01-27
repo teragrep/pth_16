@@ -56,8 +56,11 @@ import org.apache.spark.sql.SparkSession;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 
 public class Entry {
@@ -83,8 +86,11 @@ public class Entry {
         String noteId = "pth_16-notebook-" + UUID.randomUUID();
         String paragraphId = "pth_16-paragraph-" + UUID.randomUUID();
 
+        final AtomicReference<List<String>> rows = new AtomicReference<>(new ArrayList<>());
+
         BiConsumer<Dataset<Row>, Boolean> batchHandler = (rowDataset, aggsUsed) -> {
-            rowDataset.show(false);
+            rows.set(rowDataset.toJSON().collectAsList());
+            //rowDataset.show(false);
         };
 
         final DPLExecutor dplExecutor;
@@ -123,6 +129,9 @@ public class Entry {
                                     + ">"
                     );
 
+            for (String string : rows.get()) {
+                System.out.println(string);
+            }
         }
         catch (TimeoutException e) {
             throw new RuntimeException(e);
