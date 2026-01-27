@@ -52,6 +52,8 @@ import com.typesafe.config.Config;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -66,6 +68,9 @@ import java.util.function.BiConsumer;
 public class Entry {
 
     public static void main(String[] args) throws FileNotFoundException {
+
+        Logger LOGGER = LoggerFactory.getLogger(Entry.class);
+
         File configFile = new File("interpreter.json");
 
         InterpreterSettingsConfig interpreterSettingsConfig = new InterpreterSettingsConfig(configFile);
@@ -90,7 +95,6 @@ public class Entry {
 
         BiConsumer<Dataset<Row>, Boolean> batchHandler = (rowDataset, aggsUsed) -> {
             rows.set(rowDataset.toJSON().collectAsList());
-            //rowDataset.show(false);
         };
 
         final DPLExecutor dplExecutor;
@@ -110,24 +114,7 @@ public class Entry {
             final DPLExecutorResult executorResult = dplExecutor
                     .interpret(batchHandler, sparkSession, queryId, noteId, paragraphId, lines);
 
-            /*
-            final InterpreterResult.Code code;
-            if (executorResult.code().equals(DPLExecutorResult.Code.SUCCESS)) {
-                code = Code.SUCCESS;
-            } else if (executorResult.code().equals(DPLExecutorResult.Code.INCOMPLETE)) {
-                code = DPLExecutorResult.Code.INCOMPLETE;
-            } else if (executorResult.code().equals(DPLExecutorResult.Code.KEEP_PREVIOUS_RESULT)) {
-                code = Code.KEEP_PREVIOUS_RESULT;
-            } else {
-                code = Code.ERROR;
-            }
-             */
-
-            System.out
-                    .println(
-                            "executorResult code <" + executorResult.code() + "> message <" + executorResult.message()
-                                    + ">"
-                    );
+            LOGGER.info("executorResult code <{}> message <{}>", executorResult.code(), executorResult.message());
 
             for (String string : rows.get()) {
                 System.out.println(string);
