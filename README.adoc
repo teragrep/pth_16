@@ -1,13 +1,7 @@
-// Before publishing your new repository:
-// 1. Write the readme file
-// 2. Update the issues link in Contributing section in the readme file
-// 3. Update the discussion link in config.yml file in .github/ISSUE_TEMPLATE directory
 
-= repo-template
+= Teragrep DPL Command-Line Executor (pth_16)
 
-// Add a short description of your project. Tell what your project does and what it's used for.
-
-This is a template repository for Teragrep organization.
+Teragrep DPL Command-Line Executor allows running Teragrep queries from command-line.
 
 == Features
 
@@ -19,17 +13,58 @@ See the official documentation on https://docs.teragrep.com[docs.teragrep.com].
 
 == Limitations
 
-// If your project has limitations, please list them. Otherwise remove this section.
+Uses spark-submit.
 
 == How to [compile/use/implement]
 
-// add instructions how people can start to use your project
+=== Usage
+
+Example without arguments
+
+[source,shell]
+----
+JAVA_HOME=/usr/lib/jvm/java-11 /opt/teragrep/spk_02/bin/spark-submit \
+  --verbose \
+  --deploy-mode client \
+  --master yarn \
+  --executor-memory 5G \
+  --total-executor-cores 8 \
+  --jars /opt/teragrep/pth_10/lib/pth_10-shaded.jar,/opt/teragrep/spk_03/lib/*.jar \
+  --files interpreter.json pth_16-jar-with-dependencies.jar
+----
+
+Results into
+
+[source,text]
+----
++-------------------+--------------------+
+|_time              |_raw                |
++-------------------+--------------------+
+|2026-01-27 13:00:00|Welcome to Teragrep®|
++-------------------+--------------------+
+----
+
+Custom query
+
+[source,shell]
+----
+JAVA_HOME=/usr/lib/jvm/java-11 /opt/teragrep/spk_02/bin/spark-submit \
+  --verbose \
+  --deploy-mode client \
+  --master yarn \
+  --executor-memory 5G \
+  --total-executor-cores 8 \
+  --jars /opt/teragrep/pth_10/lib/pth_10-shaded.jar,/opt/teragrep/spk_03/lib/*.jar \
+  --files interpreter.json pth_16-jar-with-dependencies.jar \
+  '| makeresults count=2 | eval _raw="this is a custom query"'
+
+----
 
 == Contributing
 
 // Change the repository name in the issues link to match with your project's name
 
-You can involve yourself with our project by https://github.com/teragrep/repo-template/issues/new/choose[opening an issue] or submitting a pull request.
+You can involve yourself with our project by https://github.com/teragrep/pth_16/issues/new/choose[opening an issue] or submitting a pull request.
 
 Contribution requirements:
 

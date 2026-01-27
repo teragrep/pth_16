@@ -70,10 +70,18 @@ public class Entry {
         Config config = interpreterSettingsConfig.getConfig();
 
         String applicationName = "com.teragrep.pth_16.Entry";
-        String lines = "| makeresults count=1";
+
+        final String lines;
+        if (args.length > 0) {
+            lines = args[0];
+        }
+        else {
+            lines = "| makeresults count=1 | eval _raw=\"Welcome to Teragrep®\"";
+        }
+
         String queryId = UUID.randomUUID().toString();
-        String noteId = "";
-        String paragraphId = "";
+        String noteId = "pth_16-notebook-" + UUID.randomUUID();
+        String paragraphId = "pth_16-paragraph-" + UUID.randomUUID();
 
         BiConsumer<Dataset<Row>, Boolean> batchHandler = (rowDataset, aggsUsed) -> {
             rowDataset.show(false);
