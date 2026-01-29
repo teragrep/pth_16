@@ -46,37 +46,10 @@
 package com.teragrep.pth_16;
 
 import com.typesafe.config.Config;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.util.HashSet;
 import java.util.Set;
 
-public class InterpreterSettingsConfigTest {
+public interface FilterableConfig extends Config {
 
-    @Test
-    public void loadNFilterZep01InterpreterSettings() {
-        InterpreterSettings interpreterSettings = new InterpreterSettings(
-                new File("src/test/resources/interpreter.json")
-        );
-
-        Assertions.assertDoesNotThrow(() -> {
-            InterpreterProperties sparkProperties = interpreterSettings.interpreterProperties("spark");
-            Config sparkConfig = sparkProperties.config();
-            FilterableConfig filterableSparkConfig = new FilterableConfigImpl(sparkConfig);
-
-            Set<String> dplConfigFilters = new HashSet<>();
-            dplConfigFilters.add("dpl.");
-            dplConfigFilters.add("fs.s3a.");
-            Config config = filterableSparkConfig.startsWith(dplConfigFilters);
-
-            Assertions.assertFalse(config.getBoolean("dpl.pth_06.sql.log.enabled"));
-
-            Assertions.assertEquals("putUserHere", config.getString("fs.s3a.access.key"));
-
-            Assertions.assertFalse(config.hasPath("spark.app.name"));
-        });
-    }
-
+    public abstract Config startsWith(Set<String> filters);
 }

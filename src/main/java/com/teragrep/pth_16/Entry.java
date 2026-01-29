@@ -45,83 +45,74 @@
  */
 package com.teragrep.pth_16;
 
-import com.teragrep.pth_15.DPLExecutor;
-import com.teragrep.pth_15.DPLExecutorFactory;
-import com.teragrep.pth_15.DPLExecutorResult;
 import com.typesafe.config.Config;
-import org.apache.spark.sql.Dataset;
-import org.apache.spark.sql.Row;
+import com.typesafe.config.ConfigValue;
+import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.BiConsumer;
+import java.util.Map;
+import java.util.Set;
 
 public final class Entry {
 
     public static void main(final String[] args) throws FileNotFoundException {
 
-        final Logger LOGGER = LoggerFactory.getLogger(Entry.class);
-
         final File configFile = new File("interpreter.json");
 
-        final InterpreterSettingsConfig interpreterSettingsConfig = new InterpreterSettingsConfig(configFile);
+        final InterpreterSettings interpreterSettings = new InterpreterSettings(configFile);
 
-        final Config config = interpreterSettingsConfig.config();
+        final InterpreterProperties sparkProperties = interpreterSettings.interpreterProperties("spark");
+
+        final Config sparkInterpterConfig = sparkProperties.config();
+
+        final FilterableConfig filterableConfig = new FilterableConfigImpl(sparkInterpterConfig);
+
+        // dpl
+        final Set<String> dplConfigFilters = new HashSet<>();
+        dplConfigFilters.add("dpl.");
+        dplConfigFilters.add("fs.s3a.");
+        final Config dplConfig = filterableConfig.startsWith(dplConfigFilters);
+
+        // spark
+        final Set<String> sparkConfigFilters = new HashSet<>();
+        sparkConfigFilters.add("spark.");
+        final Config sparkConfig = filterableConfig.startsWith(sparkConfigFilters);
+        final SparkConf sparkConf = new SparkConf();
+
+        for (Map.Entry<String, ConfigValue> sparkConfigEntry : sparkConfig.entrySet()) {
+            String key = sparkConfigEntry.getKey();
+            // ignore spark-submit configs such as spark.submit.deployMode
+            if (!key.startsWith("spark.submit.")) {
+                sparkConf.set(key, sparkConfigEntry.getValue().unwrapped().toString());
+            }
+        }
 
         final String applicationName = "com.teragrep.pth_16.Entry";
 
-        final String lines;
+        final String prompt;
         if (args.length > 0) {
-            lines = args[0];
+            prompt = args[0];
         }
         else {
-            lines = "| makeresults count=1 | eval _raw=\"Welcome to Teragrep®\"";
+            prompt = "| makeresults count=1 | eval _raw=\"Welcome to Teragrep®\"";
         }
 
-        final String queryId = UUID.randomUUID().toString();
-        final String noteId = "pth_16-notebook-" + UUID.randomUUID();
-        final String paragraphId = "pth_16-paragraph-" + UUID.randomUUID();
+        final SparkSession sparkSession = SparkSession
+                .builder()
+                .config(sparkConf)
+                .appName(applicationName)
+                .getOrCreate();
 
-        final AtomicReference<List<String>> rows = new AtomicReference<>(new ArrayList<>());
+        final Query query = new Query(sparkSession, dplConfig, prompt);
 
-        final BiConsumer<Dataset<Row>, Boolean> batchHandler = (rowDataset, aggsUsed) -> {
-            rows.set(rowDataset.toJSON().collectAsList());
-        };
+        final List<String> rows = query.run();
 
-        final DPLExecutor dplExecutor;
-        try {
-            dplExecutor = new DPLExecutorFactory("com.teragrep.pth_10.executor.DPLExecutorImpl", config).create();
-        }
-        catch (
-                ClassNotFoundException | NoSuchMethodException | InvocationTargetException | InstantiationException
-                | IllegalAccessException e
-        ) {
-            throw new RuntimeException("Error initializing DPLExecutor implementation", e);
-        }
-
-        final SparkSession sparkSession = SparkSession.builder().appName(applicationName).getOrCreate();
-
-        try {
-            final DPLExecutorResult executorResult = dplExecutor
-                    .interpret(batchHandler, sparkSession, queryId, noteId, paragraphId, lines);
-
-            LOGGER.info("executorResult code <{}> message <{}>", executorResult.code(), executorResult.message());
-
-            for (String string : rows.get()) {
-                System.out.println(string);
-            }
-        }
-        catch (TimeoutException e) {
-            throw new RuntimeException(e);
+        for (String string : rows) {
+            System.out.println(string);
         }
     }
 
