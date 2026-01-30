@@ -50,9 +50,7 @@ import com.typesafe.config.*;
 import java.time.Duration;
 import java.time.Period;
 import java.time.temporal.TemporalAmount;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class FilterableConfigImpl implements FilterableConfig {
@@ -359,4 +357,9 @@ public class FilterableConfigImpl implements FilterableConfig {
 
     }
 
+    @Override
+    public Config startsWith(final String ... filters) {
+        Set<String> filterSet = new HashSet<>(Arrays.asList(filters));
+        return startsWith(filterSet);
+    }
 }

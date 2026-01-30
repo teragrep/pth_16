@@ -52,4 +52,6 @@ import java.util.Set;
 public interface FilterableConfig extends Config {
 
     public abstract Config startsWith(Set<String> filters);
+
+    public abstract Config startsWith(String ... filters);
 }

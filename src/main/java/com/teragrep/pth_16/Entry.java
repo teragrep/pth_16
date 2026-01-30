@@ -52,10 +52,8 @@ import org.apache.spark.sql.SparkSession;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public final class Entry {
 
@@ -71,16 +69,7 @@ public final class Entry {
 
         final FilterableConfig filterableConfig = new FilterableConfigImpl(sparkInterpterConfig);
 
-        // dpl
-        final Set<String> dplConfigFilters = new HashSet<>();
-        dplConfigFilters.add("dpl.");
-        dplConfigFilters.add("fs.s3a.");
-        final Config dplConfig = filterableConfig.startsWith(dplConfigFilters);
-
-        // spark
-        final Set<String> sparkConfigFilters = new HashSet<>();
-        sparkConfigFilters.add("spark.");
-        final Config sparkConfig = filterableConfig.startsWith(sparkConfigFilters);
+        final Config sparkConfig = filterableConfig.startsWith("spark.");
         final SparkConf sparkConf = new SparkConf();
 
         for (Map.Entry<String, ConfigValue> sparkConfigEntry : sparkConfig.entrySet()) {
@@ -93,6 +82,12 @@ public final class Entry {
 
         final String applicationName = "com.teragrep.pth_16.Entry";
 
+        final SparkSession sparkSession = SparkSession
+                .builder()
+                .config(sparkConf)
+                .appName(applicationName)
+                .getOrCreate();
+
         final String prompt;
         if (args.length > 0) {
             prompt = args[0];
@@ -101,11 +96,7 @@ public final class Entry {
             prompt = "| makeresults count=1 | eval _raw=\"Welcome to Teragrep®\"";
         }
 
-        final SparkSession sparkSession = SparkSession
-                .builder()
-                .config(sparkConf)
-                .appName(applicationName)
-                .getOrCreate();
+        final Config dplConfig = filterableConfig.startsWith("dpl.", "fs.s3a.");
 
         final Query query = new Query(sparkSession, dplConfig, prompt);
 
