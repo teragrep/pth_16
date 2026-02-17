@@ -1,0 +1,85 @@
+{
+  "interpreterSettings": {
+    "spark": {
+      "id": "spark",
+      "name": "spark",
+      "group": "spark",
+      "properties": {
+        "spark.app.name": {
+          "name": "spark.app.name",
+          "value": "pth_16",
+          "type": "string",
+          "description": "The name of spark application."
+        },
+        "fs.s3a.access.key": {
+          "name": "fs.s3a.access.key",
+          "value": "putUserHere",
+          "type": "string",
+          "description": "S3 access key"
+        },
+        "dpl.pth_06.sql.log.enabled": {
+          "name": "dpl.pth_06.sql.log.enabled",
+          "value": false,
+          "type": "checkbox"
+        }
+      },
+      "status": "READY",
+      "interpreterGroup": [
+        {
+          "name": "spark",
+          "class": "com.teragrep.zep_01.spark.SparkInterpreter",
+          "defaultInterpreter": false,
+          "editor": {
+            "language": "scala",
+            "editOnDblClick": false,
+            "completionKey": "TAB",
+            "completionSupport": true
+          }
+        },
+        {
+          "name": "sql",
+          "class": "com.teragrep.zep_01.spark.SparkSqlInterpreter",
+          "defaultInterpreter": false,
+          "editor": {
+            "language": "sql",
+            "editOnDblClick": false,
+            "completionKey": "TAB",
+            "completionSupport": true
+          }
+        },
+        {
+          "name": "pyspark",
+          "class": "com.teragrep.zep_01.spark.PySparkInterpreter",
+          "defaultInterpreter": false,
+          "editor": {
+            "language": "python",
+            "editOnDblClick": false,
+            "completionKey": "TAB",
+            "completionSupport": true
+          }
+        },
+        {
+          "name": "dpl",
+          "class": "com.teragrep.pth_07.DPLInterpreter",
+          "defaultInterpreter": true,
+          "editor": {
+            "language": "dpl",
+            "editOnDblClick": false,
+            "completionKey": "TAB",
+            "completionSupport": true
+          }
+        }
+      ],
+      "option": {
+        "remote": true,
+        "port": -1,
+        "perNote": "isolated",
+        "perUser": "isolated",
+        "isExistingProcess": false,
+        "setPermission": false,
+        "owners": [],
+        "isUserImpersonate": true
+      }
+    }
+  }
+}
