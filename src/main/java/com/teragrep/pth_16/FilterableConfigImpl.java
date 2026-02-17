@@ -53,7 +53,7 @@ import java.time.temporal.TemporalAmount;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-final public class FilterableConfigImpl implements FilterableConfig {
+public final class FilterableConfigImpl implements FilterableConfig {
 
     private final Config config;
 
