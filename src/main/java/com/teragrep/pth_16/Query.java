@@ -63,7 +63,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 
-public class Query {
+final public class Query {
 
     private final Logger LOGGER = LoggerFactory.getLogger(Query.class);
 

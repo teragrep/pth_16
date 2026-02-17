@@ -47,10 +47,7 @@ package com.teragrep.pth_16;
 
 import java.io.File;
 
-import jakarta.json.Json;
-import jakarta.json.JsonObject;
-import jakarta.json.JsonReader;
-import jakarta.json.JsonValue;
+import jakarta.json.*;
 
 import java.io.FileReader;
 import java.io.FileNotFoundException;
@@ -66,11 +63,13 @@ public final class InterpreterSettings {
     public InterpreterProperties interpreterProperties(final String interpreterName) throws FileNotFoundException {
 
         try (JsonReader reader = Json.createReader(new FileReader(configFile))) {
-            final JsonObject jsonObject = reader.readObject();
+            final JsonStructure jsonStructure = reader.read();
 
-            if (!jsonObject.getValueType().equals(JsonValue.ValueType.OBJECT)) {
+            if (!jsonStructure.getValueType().equals(JsonValue.ValueType.OBJECT)) {
                 throw new IllegalArgumentException("config does not contain a JSON object");
             }
+
+            final JsonObject jsonObject = jsonStructure.asJsonObject();
 
             final String interpreterSettingsKey = "interpreterSettings";
             if (!jsonObject.containsKey(interpreterSettingsKey)) {

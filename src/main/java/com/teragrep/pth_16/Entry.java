@@ -65,9 +65,9 @@ public final class Entry {
 
         final InterpreterProperties sparkProperties = interpreterSettings.interpreterProperties("spark");
 
-        final Config sparkInterpterConfig = sparkProperties.config();
+        final Config sparkInterPreterConfig = sparkProperties.config();
 
-        final FilterableConfig filterableConfig = new FilterableConfigImpl(sparkInterpterConfig);
+        final FilterableConfig filterableConfig = new FilterableConfigImpl(sparkInterPreterConfig);
 
         final Config sparkConfig = filterableConfig.startsWith("spark.");
         final SparkConf sparkConf = new SparkConf();
