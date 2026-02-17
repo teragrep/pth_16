@@ -210,6 +210,8 @@
             <exclude>README.md</exclude>
             <!-- Doxyfile -->
             <exclude>Doxyfile</exclude>
+            <!-- rpm -->
+            <exclude>rpm/rpm.pom.xml</exclude>
           </excludes>
         </configuration>
         <executions>
