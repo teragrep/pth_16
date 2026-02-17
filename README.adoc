@@ -23,7 +23,7 @@ Example without arguments
 
 [source,shell]
 ----
-JAVA_HOME=/usr/lib/jvm/java-11 /opt/teragrep/spk_02/bin/spark-submit \
+HADOOP_CONF_DIR=/opt/teragrep/hdp_03/etc/hadoop JAVA_HOME=/usr/lib/jvm/java-11 /opt/teragrep/spk_02/bin/spark-submit \
   --verbose \
   --deploy-mode client \
   --master yarn \
@@ -44,7 +44,7 @@ Custom query
 
 [source,shell]
 ----
-JAVA_HOME=/usr/lib/jvm/java-11 /opt/teragrep/spk_02/bin/spark-submit \
+HADOOP_CONF_DIR=/opt/teragrep/hdp_03/etc/hadoop JAVA_HOME=/usr/lib/jvm/java-11 /opt/teragrep/spk_02/bin/spark-submit \
   --verbose \
   --deploy-mode client \
   --master yarn \
