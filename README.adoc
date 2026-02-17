@@ -51,7 +51,8 @@ JAVA_HOME=/usr/lib/jvm/java-11 /opt/teragrep/spk_02/bin/spark-submit \
   --executor-memory 5G \
   --total-executor-cores 8 \
   --jars /opt/teragrep/pth_10/lib/pth_10-shaded.jar,/opt/teragrep/spk_03/lib/*.jar \
-  --files interpreter.json pth_16-jar-with-dependencies.jar \
+  --files interpreter.json \
+  pth_16-jar-with-dependencies.jar \
   '| makeresults count=1 | eval _raw="this is a custom query"'
 
 ----
@@ -74,7 +75,8 @@ JAVA_HOME=/usr/lib/jvm/java-11 /opt/teragrep/spk_02/bin/spark-submit \
   --executor-memory 5G \
   --total-executor-cores 8 \
   --jars /opt/teragrep/pth_10/lib/pth_10-shaded.jar,/opt/teragrep/spk_03/lib/*.jar \
-  --files interpreter.json pth_16-jar-with-dependencies.jar \
+  --files interpreter.json \
+  pth_16-jar-with-dependencies.jar \
   '| makeresults count=1 | eval _raw="this is a custom query"' | tee output.json
 ----
 
