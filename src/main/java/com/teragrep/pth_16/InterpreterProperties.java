@@ -53,7 +53,7 @@ import jakarta.json.JsonValue;
 
 import java.util.Map;
 
-public class InterpreterProperties {
+final public class InterpreterProperties {
 
     private final JsonObject propertiesJson;
 
