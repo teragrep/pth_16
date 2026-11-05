@@ -15,9 +15,31 @@ See the official documentation on https://docs.teragrep.com[docs.teragrep.com].
 
 Uses spark-submit.
 
-== How to [compile/use/implement]
+Kafka saving requires `spk_03` libraries to be present.
+
+== Requirements
+
+Requires Spark installation to be available, including `spark-submit` binary.
+
+Requires the following Hadoop configurations from a valid cluster to be available in `HADOOP_CONF_DIR`:
+
+- `core-site.xml`
+
+- `hdfs-site.xml`
+
+- `yarn-site.xml`
+
+Requires `interpreter.json` from `zep_01` to be available.
+
+Requires `pth_10-shaded.jar` to be available.
+
+Uses `spk_02` and `hdp_03` libraries from the running cluster and they do not need to be locally available as long as cluster has them.
+
+== How to use
 
 === Usage
+
+Connecting to Kerberos secured clusters requires you to set `export KRB5CCNAME="/tmp/krb5cc_${UID}";` and then running `kinit` with valid credentials. You can use custom `krb5.conf` by setting `export SPARK_SUBMIT_OPTS="-Djava.security.krb5.conf=custom-krb5.conf"` before running.
 
 Example without arguments
 
@@ -29,8 +51,9 @@ HADOOP_CONF_DIR=/opt/teragrep/hdp_03/etc/hadoop JAVA_HOME=/usr/lib/jvm/java-11 /
   --master yarn \
   --executor-memory 5G \
   --total-executor-cores 8 \
-  --jars /opt/teragrep/pth_10/lib/pth_10-shaded.jar,/opt/teragrep/spk_03/lib/*.jar \
-  --files interpreter.json pth_16-jar-with-dependencies.jar
+  --jars /opt/teragrep/pth_10/lib/pth_10-shaded.jar,/opt/teragrep/spk_03/lib/*.jar,local:/opt/teragrep/spk_02/jars/*,local:/opt/teragrep/hdp_03/share/hadoop/common/*,local:/opt/teragrep/hdp_03/share/hadoop/tools/lib/hadoop-aws-3.3.6.jar,local:/opt/teragrep/hdp_03/share/hadoop/tools/lib/aws-java-sdk-bundle-1.12.367.jar \
+  --files interpreter.json \
+  pth_16-jar-with-dependencies.jar
 ----
 
 Results into
@@ -50,11 +73,10 @@ HADOOP_CONF_DIR=/opt/teragrep/hdp_03/etc/hadoop JAVA_HOME=/usr/lib/jvm/java-11 /
   --master yarn \
   --executor-memory 5G \
   --total-executor-cores 8 \
-  --jars /opt/teragrep/pth_10/lib/pth_10-shaded.jar,/opt/teragrep/spk_03/lib/*.jar \
+  --jars /opt/teragrep/pth_10/lib/pth_10-shaded.jar,/opt/teragrep/spk_03/lib/*.jar,local:/opt/teragrep/spk_02/jars/*,local:/opt/teragrep/hdp_03/share/hadoop/common/*,local:/opt/teragrep/hdp_03/share/hadoop/tools/lib/hadoop-aws-3.3.6.jar,local:/opt/teragrep/hdp_03/share/hadoop/tools/lib/aws-java-sdk-bundle-1.12.367.jar \
   --files interpreter.json \
   pth_16-jar-with-dependencies.jar \
   '| makeresults count=1 | eval _raw="this is a custom query"'
-
 ----
 
 Results into
@@ -68,13 +90,13 @@ Results can be piped into a file
 
 [source,shell]
 ----
-JAVA_HOME=/usr/lib/jvm/java-11 /opt/teragrep/spk_02/bin/spark-submit \
+HADOOP_CONF_DIR=/opt/teragrep/hdp_03/etc/hadoop JAVA_HOME=/usr/lib/jvm/java-11 /opt/teragrep/spk_02/bin/spark-submit \
   --verbose \
   --deploy-mode client \
   --master yarn \
   --executor-memory 5G \
   --total-executor-cores 8 \
-  --jars /opt/teragrep/pth_10/lib/pth_10-shaded.jar,/opt/teragrep/spk_03/lib/*.jar \
+  --jars /opt/teragrep/pth_10/lib/pth_10-shaded.jar,/opt/teragrep/spk_03/lib/*.jar,local:/opt/teragrep/spk_02/jars/*,local:/opt/teragrep/hdp_03/share/hadoop/common/*,local:/opt/teragrep/hdp_03/share/hadoop/tools/lib/hadoop-aws-3.3.6.jar,local:/opt/teragrep/hdp_03/share/hadoop/tools/lib/aws-java-sdk-bundle-1.12.367.jar \
   --files interpreter.json \
   pth_16-jar-with-dependencies.jar \
   '| makeresults count=1 | eval _raw="this is a custom query"' | tee output.json
